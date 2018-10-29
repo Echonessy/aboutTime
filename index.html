@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Echonessy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+    <script>
+        (function(win) {
+            var doc = win.document;
+            var docEl = doc.documentElement;
+            var tid;
+            function refreshRem() {
+                var width = docEl.getBoundingClientRect().width;
+                if (width > 800) { // 最大宽度
+                    width =800;
+                }
+                var rem = width / 10; // 将屏幕宽度分成10份， 1份为1rem
+                docEl.style.fontSize = rem + 'px';
+                ///rem用font-size:75px来进行换算
+            }
+            win.addEventListener('resize', function() {
+                clearTimeout(tid);
+                tid = setTimeout(refreshRem, 1);
+            }, false);
+            win.addEventListener('pageshow', function(e) {
+                if (e.persisted) {
+                    clearTimeout(tid);
+                    tid = setTimeout(refreshRem, 1);
+                }
+            }, false);
+            refreshRem();
+        })(window);
+    </script>
+    <style>
+        *{padding: 0;margin: 0;}
+        .Time{position: fixed;top: 0;left: 0; font-size: 0.5rem;width: 100%;height: 100%; display: flex;text-align: center;justify-content:center; align-items: center;}
+        .Time{background:linear-gradient(-135deg, #fff 20%,#ccc 40%,#000 90%);color: white;}
+    </style>
+</head>
+<body>
+
+<div class="Time" id="Time">
+
+</div>
+
+<script>
+    function timeCompute(a) {
+        var day = parseInt(a/86400000)
+        var hour= parseInt(a%86400000/3600000);
+        var min=parseInt(a%86400000%3600000/60000);
+        var second=parseInt(a%86400000%3600000%60000/1000);
+        var ms=parseInt(a%86400000%3600000%60000%1000);
+        return day+'(d)'+toTwo(hour)+'(h)'+toTwo(min)+'(m)'+toTwo(second)+'(s)'+toThree(ms)+'(ms)'
+    }
+    function aboutEnd() {
+        var writeTime =new Date('2018-3-29 00:04:00').getTime();  //微信说分手
+        var sayTime = new Date('2018-3-30').getTime(); //你正式面对我说分手
+        var today = new Date().getTime();
+        var passAway = today - sayTime;
+        return timeCompute(passAway)
+    }
+    function toTwo(t) {
+        return t < 10 ? '0'+ t:t;
+    }
+    function toThree(t) {
+        if(t<100&&t>9){
+            t = '0'+t
+        } else if (t<10) {
+            t = '00'+t
+        } else {
+            return t;
+        }
+        return t;
+    }
+    function timeSet() {
+        var timer = null;
+        if(timer) {clearInterval(timer)}
+        timer = setInterval(function () {
+            document.getElementById('Time').innerHTML = aboutEnd()
+        },1)
+    }
+    timeSet();
+</script>
+</body>
+</html>
